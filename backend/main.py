@@ -6,13 +6,15 @@ from services.cleaning import clean_data
 from services.model import run_classification, run_regression, run_clustering
 
 app = FastAPI()
+import os
+
 
 # ------------------ DB CONNECTION FUNCTION ------------------
 def get_db_connection():
     return mysql.connector.connect(
         host="localhost",
         user="root",
-        password="9928807058",   # 👈 your password
+        password = os.getenv("DB_PASSWORD"),   
         database="datasense"
     )
 
@@ -149,5 +151,5 @@ def get_history():
         return history
 
     except Exception as e:
-        print("History Error:", e)   # 👈 IMPORTANT
+        print("History Error:", e)   
         return {"error": str(e)}
