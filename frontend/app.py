@@ -53,7 +53,7 @@ if st.button("🚀 Run Analysis"):
         try:
             with st.spinner("⏳ Running analysis..."):
                 response = requests.post(
-                    "http://127.0.0.1:8000/train",
+                    "https://ml-automation-dashboard.onrender.com/train",
                     files={"file": (file.name, file.getvalue(), "text/csv")},
                     data={
                         "problem_type": problem_type,
@@ -187,7 +187,7 @@ show_history = st.checkbox("Show History")
 
 if show_history:
     try:
-        response = requests.get("http://127.0.0.1:8000/history")
+        response = requests.get("https://ml-automation-dashboard.onrender.com/history")
 
         history = response.json()
 
