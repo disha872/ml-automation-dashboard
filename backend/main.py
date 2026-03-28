@@ -2,9 +2,8 @@ from fastapi import FastAPI, UploadFile, File, Form
 import pandas as pd
 import mysql.connector
 
-from services.cleaning import clean_data
-from services.model import run_classification, run_regression, run_clustering
-
+from backend.services.cleaning import clean_data
+from backend.services.model import run_classification, run_regression, run_clustering
 app = FastAPI()
 import os
 
