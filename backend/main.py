@@ -101,8 +101,8 @@ async def train_model(
             cursor = conn.cursor()
 
             cursor.execute(
-                "INSERT INTO results (best_model, score, problem_type) VALUES (%s, %s, %s)",
-                (model_name, score, problem_type)
+            "INSERT INTO results (filename, best_model, score, problem_type) VALUES (%s, %s, %s, %s)",
+            (file.filename, model_name, score, problem_type)
             )
 
             conn.commit()
@@ -133,9 +133,9 @@ def get_history():
         cursor = conn.cursor()
 
         cursor.execute("""
-            SELECT best_model, score, problem_type
-            FROM results
-            ORDER BY score DESC
+        SELECT best_model, score, problem_type
+        FROM results
+        ORDER BY score DESC
         """)
 
         rows = cursor.fetchall()
