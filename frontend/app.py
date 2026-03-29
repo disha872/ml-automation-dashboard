@@ -100,10 +100,7 @@ if st.button("🚀 Run Analysis"):
                             model_name = best
                             model_score = None
 
-                        col1.metric("🏆 Best Model", model_name)
-
-                        if model_score is not None:
-                            col2.metric("📈 Score", round(model_score, 4))
+                        
 
                     # ------------------ MODEL RESULTS ------------------
                     st.subheader("📊 Model Comparison")
