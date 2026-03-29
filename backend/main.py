@@ -53,10 +53,11 @@ async def train_model(
     problem_type: str = Form(...)
 ):
     try:
+        # -------- READ FILE --------
         df = pd.read_csv(file.file)
         df = clean_data(df)
 
-        # ---------------- VALIDATION ----------------
+        # -------- VALIDATION --------
         if problem_type != "clustering":
             if not target_column:
                 return {"error": "Target column required"}
@@ -66,13 +67,14 @@ async def train_model(
 
             X = df.drop(columns=[target_column])
             y = df[target_column]
+
             X = pd.get_dummies(X)
 
         else:
             X = pd.get_dummies(df)
             y = None
 
-        # ---------------- MODEL ----------------
+        # -------- MODEL --------
         if problem_type == "classification":
             results, best, explanation, importance = run_classification(X, y)
 
@@ -87,7 +89,7 @@ async def train_model(
             explanation = "Clustering performed"
             importance = "Not applicable"
 
-        # ---------------- EXTRACT BEST ----------------
+        # -------- EXTRACT BEST --------
         if isinstance(best, (list, tuple)):
             model_name = best[0]
             score = float(best[1])
@@ -95,14 +97,14 @@ async def train_model(
             model_name = best
             score = 0.0
 
-        # ---------------- SAVE TO DB ----------------
+        # -------- SAVE TO DATABASE --------
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
 
             cursor.execute(
-            "INSERT INTO results (id, filename, best_model, score, problem_type) VALUES (%s, %s, %s, %s, %s)",
-            (None, file.filename, model_name, score, problem_type)
+                "INSERT INTO results (filename, best_model, score, problem_type) VALUES (%s, %s, %s, %s)",
+                (file.filename, model_name, score, problem_type)
             )
 
             conn.commit()
@@ -112,7 +114,7 @@ async def train_model(
         except Exception as db_error:
             print("DB Error:", db_error)
 
-        # ---------------- RESPONSE ----------------
+        # -------- RESPONSE --------
         return {
             "results": results,
             "best_model": [model_name, score],
@@ -122,6 +124,7 @@ async def train_model(
         }
 
     except Exception as e:
+        print("TRAIN ERROR:", e)
         return {"error": str(e)}
 
 
