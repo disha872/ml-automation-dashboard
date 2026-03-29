@@ -101,8 +101,8 @@ async def train_model(
             cursor = conn.cursor()
 
             cursor.execute(
-            "INSERT INTO results (filename, best_model, score, problem_type) VALUES (%s, %s, %s, %s)",
-            (file.filename, model_name, score, problem_type)
+            "INSERT INTO results (id, filename, best_model, score, problem_type) VALUES (%s, %s, %s, %s, %s)",
+            (None, file.filename, model_name, score, problem_type)
             )
 
             conn.commit()
