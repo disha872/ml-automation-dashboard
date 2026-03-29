@@ -1,15 +1,15 @@
 from fastapi import FastAPI, UploadFile, File, Form
 import pandas as pd
+import os
 import mysql.connector
 
 from backend.services.cleaning import clean_data
 from backend.services.model import run_classification, run_regression, run_clustering
+
 app = FastAPI()
-import os
 
-import mysql.connector
-import os
 
+# ------------------ DB CONNECTION FUNCTION ------------------
 def get_db_connection():
     return mysql.connector.connect(
         host=os.getenv("DB_HOST"),
@@ -18,22 +18,9 @@ def get_db_connection():
         database=os.getenv("DB_NAME"),
         port=41295
     )
-# ------------------ DB CONNECTION FUNCTION ------------------
-
-import mysql.connector
-
-conn = mysql.connector.connect(
-    host=os.getenv("DB_HOST"),
-    user=os.getenv("DB_USER"),
-    password=os.getenv("DB_PASSWORD"),
-    database=os.getenv("DB_NAME"),
-    port=41295
-)
-
-cursor = conn.cursor()
 
 
-
+# ------------------ HOME ------------------
 @app.get("/")
 def home():
     return {"message": "DataSense AI Backend Running 🚀"}
@@ -77,7 +64,6 @@ async def train_model(
 
             X = df.drop(columns=[target_column])
             y = df[target_column]
-
             X = pd.get_dummies(X)
 
         else:
@@ -113,7 +99,7 @@ async def train_model(
             cursor = conn.cursor()
 
             cursor.execute(
-                "INSERT INTO results (model, score, problem_type) VALUES (%s, %s, %s)",
+                "INSERT INTO results (best_model, score, problem_type) VALUES (%s, %s, %s)",
                 (model_name, score, problem_type)
             )
 
@@ -166,5 +152,5 @@ def get_history():
         return history
 
     except Exception as e:
-        print("History Error:", e)   
+        print("History Error:", e)
         return {"error": str(e)}
