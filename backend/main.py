@@ -21,8 +21,10 @@ def get_db_connection():
 
 
 # ------------------ HOME ------------------
-@app.get("/")
-def home():
+from fastapi import Request
+
+@app.api_route("/", methods=["GET", "HEAD"])
+def home(request: Request):
     return {"message": "DataSense AI Backend Running 🚀"}
 
 
